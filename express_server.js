@@ -1,22 +1,22 @@
-var express = require("express");
-var app = express();
-var PORT = 8080;
+const express = require("express");
+const app = express();
+const PORT = 8080;
 const bodyParser = require("body-parser");
 
 
 app.set("view engine", "ejs");
 app.use(bodyParser.urlencoded({extended: true}));
 
-var urlDatabase = {
+const urlDatabase = {
   "b2xVn2": "http://www.lighthouselabs.ca",
   "9sm5xK": "http://www.google.com"
 }
 
 function generateRandomString() {
-  var result = "";
-  var chars = "0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"
-  for (var i = 0; i < 6; i++) {
-    var code = Math.floor(Math.random() * chars.length);
+  let result = "";
+  const chars = "0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"
+  for (let i = 0; i < 6; i++) {
+    let code = Math.floor(Math.random() * chars.length);
     result += chars[code];
   }
   return result;
@@ -27,7 +27,7 @@ app.get("/", (req, res) => {
 });
 
 app.get("/urls", (req, res) => {
-  let templateVars = {urls: urlDatabase};
+  const templateVars = {urls: urlDatabase};
   res.render("urls_index", templateVars);
 });
 
@@ -36,20 +36,20 @@ app.get("/urls/new", (req, res) => {
 })
 
 app.post("/urls", (req, res) => {
-  var input = req.body;
-  var shortURL = generateRandomString();
-  var longURL = input['longURL'];
+  const input = req.body;
+  const shortURL = generateRandomString();
+  const longURL = input['longURL'];
   urlDatabase[shortURL] = longURL;
   res.redirect("/urls/" + shortURL);
 });
 
 app.get("/u/:shortURL", (req, res) => {
-  let longURL = urlDatabase[req.params.shortURL];
+  const longURL = urlDatabase[req.params.shortURL];
   res.redirect(longURL);
 });
 
 app.get("/urls/:id", (req, res) => {
-  let templateVars = {shortURL: req.params.id, urls: urlDatabase};
+  const templateVars = {shortURL: req.params.id, urls: urlDatabase};
   res.render("urls_show", templateVars);
 })
 
