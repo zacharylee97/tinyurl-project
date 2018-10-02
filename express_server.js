@@ -43,6 +43,11 @@ app.post("/urls", (req, res) => {
   res.redirect("/urls/" + shortURL);
 });
 
+app.get("/u/:shortURL", (req, res) => {
+  let longURL = urlDatabase[req.params.shortURL];
+  res.redirect(longURL);
+});
+
 app.get("/urls/:id", (req, res) => {
   let templateVars = {shortURL: req.params.id, urls: urlDatabase};
   res.render("urls_show", templateVars);
