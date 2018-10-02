@@ -12,6 +12,16 @@ var urlDatabase = {
   "9sm5xK": "http://www.google.com"
 }
 
+function generateRandomString() {
+  var result = "";
+  var chars = "0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"
+  for (var i = 0; i < 6; i++) {
+    var code = Math.floor(Math.random() * chars.length);
+    result += chars[code];
+  }
+  return result;
+}
+
 app.get("/", (req, res) => {
   res.send("Hello!");
 });
@@ -24,6 +34,11 @@ app.get("/urls", (req, res) => {
 app.get("/urls/new", (req, res) => {
   res.render("urls_new");
 })
+
+app.post("/urls", (req, res) => {
+  console.log(req.body);
+  res.send("Ok");
+});
 
 app.get("/urls/:id", (req, res) => {
   let templateVars = {shortURL: req.params.id, urls: urlDatabase};
