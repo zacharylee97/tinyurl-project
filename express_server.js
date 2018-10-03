@@ -103,16 +103,34 @@ app.get("/register", (req, res) => {
 app.post("/register", (req, res) => {
   const email = req.body['email'];
   const password = req.body['password'];
-  const id = generateRandomString();
-  users[id] = {
-    "id": id,
-    "email": email,
-    "password": password,
+  //Check if email and password are submitted
+  if (!email || !password){
+    res.statusCode = 400;
+    res.end("400 status code: Please provide email and password");
+  } else {
+    //Check is email is already registered as a user
+    var emailUsed = false;
+    for (user in users) {
+      if (email === users[user]['email']) {
+        emailUsed = true;
+      }
+    }
+    if (emailUsed) {
+      res.statusCode = 400;
+      res.end("400 status code: Email already registered by a user");
+    } else {
+      //Register new user
+      const id = generateRandomString();
+      users[id] = {
+        "id": id,
+        "email": email,
+        "password": password,
+      }
+      res.cookie("user_id", id);
+      res.redirect("/register");
+    }
   }
-  res.cookie("user_id", id);
-  console.log(users);
-  res.redirect("/urls");
-})
+});
 
 app.get("/u/:id", (req, res) => {
   const longURL = urlDatabase[req.params.id];
