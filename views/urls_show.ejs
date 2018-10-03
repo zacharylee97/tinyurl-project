@@ -1,16 +1,16 @@
   <!DOCTYPE html>
   <html lang="en">
   <head>
+    <% include ./partials/_header %>
   </head>
 
 <body>
-  <% include ./partials/_header %>
   <p><%= shortURL %> - <a href = <%= urls[shortURL] %>><%= urls[shortURL] %></a></p>
   <% const site = shortURL + "/update" %>
   <form action=<%=site%> method="POST" style="margin:150px;">
       <label for="longURL">Update URL:</label>
       <input id="longURL" type="text" name="longURL" placeholder="http://" style="width: 300px">
-      <input type="submit" value="Submit">
+      <button type="submit" value="Submit">Submit</button>
     </form>
 </body>
 </html>
