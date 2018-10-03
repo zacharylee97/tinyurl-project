@@ -46,8 +46,16 @@ app.post("/urls", (req, res) => {
   res.redirect("/urls/" + shortURL);
 });
 
+//Delete URL from database
 app.post("/urls/:id/delete", (req, res) => {
   delete urlDatabase[req.params.id];
+  res.redirect("/urls");
+});
+
+//Update URL in database
+app.post("/urls/:id/update", (req, res) => {
+  const input = req.body;
+  urlDatabase[req.params.id] = input['longURL'];
   res.redirect("/urls");
 });
 
