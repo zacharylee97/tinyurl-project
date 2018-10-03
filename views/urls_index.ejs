@@ -7,8 +7,14 @@
 <body>
   <ul>
     <% for (var el in urls) { %>
-    <li><%= el %> - <%= urls[el] %></li>
+    <li><%= el %> - <a href = <%= urls[el] %>><%= urls[el] %></a>
+      <% var site = "urls/" + el + "/delete" %>
+      <form method="POST" action=<%=site%>>
+        <button type="delete" value="Delete">Delete</button>
+      </form>
+    </li>
     <% }; %>
   </ul>
+
 </body>
 </html>
