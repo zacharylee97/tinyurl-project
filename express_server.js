@@ -13,6 +13,19 @@ const urlDatabase = {
   "9sm5xK": "http://www.google.com"
 }
 
+const users = {
+  "userRandomID": {
+    id: "userRandomID",
+    email: "user@example.com",
+    password: "purple-monkey-dinosaur"
+  },
+ "user2RandomID": {
+    id: "user2RandomID",
+    email: "user2@example.com",
+    password: "dishwasher-funk"
+  }
+}
+
 function generateRandomString() {
   let result = "";
   const chars = "0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"
@@ -86,11 +99,19 @@ app.get("/register", (req, res) => {
   res.render("urls_register", templateVars);
 })
 
-//
+//Save email and password to users database
 app.post("/register", (req, res) => {
-  console.log(req.body['email']);
-  console.log(req.body['password']);
-  res.redirect("/register");
+  const email = req.body['email'];
+  const password = req.body['password'];
+  const id = generateRandomString();
+  users[id] = {
+    "id": id,
+    "email": email,
+    "password": password,
+  }
+  res.cookie("user_id", id);
+  console.log(users);
+  res.redirect("/urls");
 })
 
 app.get("/u/:id", (req, res) => {
