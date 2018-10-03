@@ -78,11 +78,19 @@ app.post("/logout", (req, res) => {
   res.redirect("/urls");
 });
 
+//Connects to registration page
 app.get("/register", (req, res) => {
   let templateVars = {
     username: req.cookies['username']
   };
   res.render("urls_register", templateVars);
+})
+
+//
+app.post("/register", (req, res) => {
+  console.log(req.body['email']);
+  console.log(req.body['password']);
+  res.redirect("/register");
 })
 
 app.get("/u/:id", (req, res) => {
