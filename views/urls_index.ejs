@@ -6,10 +6,11 @@
 
 <body>
   <ul>
-    <% for (var el in urls) { %>
-    <li><%= el %> - <a href = <%= urls[el] %>><%= urls[el] %></a>
-      <% var site = "urls/" + el + "/delete" %>
-      <form method="POST" action=<%=site%>>
+    <% for (const el in urls) { %>
+    <% const site = "urls/" + el%>
+    <li><%= el %> - <a href = <%= urls[el] %>><%= urls[el] %></a> <a href=<%=site%>>Edit</a>
+      <% const del = site + "/delete"%>
+      <form method="POST" action=<%=del%>>
         <button type="delete" value="Delete">Delete</button>
       </form>
     </li>
