@@ -26,15 +26,18 @@ app.get("/", (req, res) => {
   res.send("Hello!");
 });
 
+//Connects to homepage with all database of URLs
 app.get("/urls", (req, res) => {
   const templateVars = {urls: urlDatabase};
   res.render("urls_index", templateVars);
 });
 
+//Connects to page to add URLs
 app.get("/urls/new", (req, res) => {
   res.render("urls_new");
 })
 
+//Generate new shortURL and add to database
 app.post("/urls", (req, res) => {
   const input = req.body;
   const shortURL = generateRandomString();
@@ -43,8 +46,13 @@ app.post("/urls", (req, res) => {
   res.redirect("/urls/" + shortURL);
 });
 
-app.get("/u/:shortURL", (req, res) => {
-  const longURL = urlDatabase[req.params.shortURL];
+app.post("/urls/:id/delete", (req, res) => {
+  delete urlDatabase[req.params.id];
+  res.redirect("/urls");
+});
+
+app.get("/u/:id", (req, res) => {
+  const longURL = urlDatabase[req.params.id];
   res.redirect(longURL);
 });
 
