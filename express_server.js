@@ -28,12 +28,16 @@ app.get("/", (req, res) => {
 
 //Connects to homepage with all database of URLs
 app.get("/urls", (req, res) => {
-  const templateVars = {urls: urlDatabase};
+  let templateVars = {
+    urls: urlDatabase,
+     };
   res.render("urls_index", templateVars);
 });
 
 //Connects to page to add URLs
 app.get("/urls/new", (req, res) => {
+  let templateVars = {
+     };
   res.render("urls_new");
 })
 
@@ -54,8 +58,13 @@ app.post("/urls/:id/delete", (req, res) => {
 
 //Update URL in database
 app.post("/urls/:id/update", (req, res) => {
-  const input = req.body;
-  urlDatabase[req.params.id] = input['longURL'];
+  urlDatabase[req.params.id] = req.body['longURL'];
+  res.redirect("/urls");
+});
+
+//Save username as a cookie
+app.post("/login", (req, res) => {
+  res.cookie("username", req.body['username']);
   res.redirect("/urls");
 });
 
@@ -65,7 +74,10 @@ app.get("/u/:id", (req, res) => {
 });
 
 app.get("/urls/:id", (req, res) => {
-  const templateVars = {shortURL: req.params.id, urls: urlDatabase};
+  let templateVars = {
+    shortURL: req.params.id,
+    urls: urlDatabase,
+  };
   res.render("urls_show", templateVars);
 })
 
