@@ -72,6 +72,12 @@ app.post("/login", (req, res) => {
   res.redirect("/urls");
 });
 
+//Remove username cookie
+app.post("/logout", (req, res) => {
+  res.clearCookie("username")
+  res.redirect("/urls");
+});
+
 app.get("/u/:id", (req, res) => {
   const longURL = urlDatabase[req.params.id];
   res.redirect(longURL);
