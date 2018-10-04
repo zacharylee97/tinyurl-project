@@ -4,6 +4,7 @@ const express = require("express");
 const bodyParser = require("body-parser");
 const cookieSession = require("cookie-session");
 const bcrypt = require("bcryptjs")
+const methodOverride = require('method-override');
 
 //Set up express with body-parser and cookie-session
 const app = express();
