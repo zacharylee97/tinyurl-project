@@ -59,7 +59,11 @@ app.get("/urls/new", (req, res) => {
   let templateVars = {
     user: users[req.cookies['user_id']]
      };
-  res.render("urls_new", templateVars);
+  if (req.cookies['user_id']) {
+    res.render("urls_new", templateVars);
+  } else {
+    res.redirect("/login")
+  }
 })
 
 //Generate new shortURL and add to database
