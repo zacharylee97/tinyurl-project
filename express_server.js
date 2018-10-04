@@ -120,8 +120,8 @@ app.post("/register", (req, res) => {
     res.end("400 status code: Please provide email and password");
   } else {
     //Check if email is already registered as a user
-    var emailUsed = false;
-    for (user in users) {
+    let emailUsed = false;
+    for (var user in users) {
       if (email === users[user]['email']) {
         emailUsed = true;
       }
@@ -161,9 +161,9 @@ app.post("/login", (req, res) => {
     res.end("400 status code: Please provide email and password");
   } else {
     //Check if email matches a user
-    var matchUser = false;
-    var login = false;
-    var id;
+    let matchUser = false;
+    let login = false;
+    let id;
     for (user in users) {
       if (email === users[user]['email']) {
         matchUser = true;
@@ -195,7 +195,7 @@ app.post("/logout", (req, res) => {
 });
 
 app.get("/u/:id", (req, res) => {
-  const longURL = urlDatabase[req.params.id];
+  const longURL = urlDatabase[req.params.id]['url'];
   res.redirect(longURL);
 });
 
