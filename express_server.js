@@ -2,6 +2,7 @@ const express = require("express");
 const PORT = 8080;
 const bodyParser = require("body-parser");
 const cookieParser = require("cookie-parser");
+const bcrypt = require('bcryptjs')
 
 const app = express();
 app.set("view engine", "ejs");
@@ -23,17 +24,17 @@ const users = {
   "userRandomID": {
     id: "userRandomID",
     email: "user@example.com",
-    password: "purple-monkey-dinosaur"
+    password: bcrypt.hashSync("purple-monkey-dinosaur")
   },
  "user2RandomID": {
     id: "user2RandomID",
     email: "user2@example.com",
-    password: "dishwasher-funk"
+    password: bcrypt.hashSync("dishwasher-funk")
   },
   "jSi83D": {
     id: "jSi83D",
     email: "zacharylhlee@hotmail.com",
-    password: "hello"
+    password: bcrypt.hashSync("hello")
   }
 }
 
@@ -101,7 +102,6 @@ app.post("/urls/:id/update", (req, res) => {
   res.redirect("/urls");
 });
 
-
 //Connects to registration page
 app.get("/register", (req, res) => {
   let templateVars = {
@@ -114,6 +114,7 @@ app.get("/register", (req, res) => {
 app.post("/register", (req, res) => {
   const email = req.body['email'];
   const password = req.body['password'];
+  const hashedPassword = bcrypt.hashSync(password, 10);
   //Check if email and password are submitted
   if (!email || !password){
     res.statusCode = 400;
@@ -135,7 +136,7 @@ app.post("/register", (req, res) => {
       users[id] = {
         "id": id,
         "email": email,
-        "password": password,
+        "password": hashedPassword,
       }
       res.cookie("user_id", id);
       res.redirect("/urls");
@@ -172,7 +173,7 @@ app.post("/login", (req, res) => {
     }
     if (matchUser) {
       //Check if password matches registered user
-      if (password === users[id]['password']) {
+      if (bcrypt.compareSync(password, users[id]['password'])) {
         res.cookie("user_id", id);
         res.redirect("/");
       //403 status code if password does not match user
