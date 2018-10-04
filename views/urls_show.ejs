@@ -5,7 +5,7 @@
   </head>
 
 <body>
-  <p><%= shortURL %> - <a href = <%= urls[shortURL] %>><%= urls[shortURL] %></a></p>
+  <p><%= shortURL %> - <a href = <%= urls[shortURL]['url'] %>><%= urls[shortURL]['url'] %></a></p>
   <% const site = shortURL + "/update" %>
   <form action=<%=site%> method="POST" style="margin:150px;">
       <label for="longURL">Update URL:</label>
