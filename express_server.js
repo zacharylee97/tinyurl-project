@@ -1,9 +1,11 @@
-const express = require("express");
+//Adds all required packages
 const PORT = 8080;
+const express = require("express");
 const bodyParser = require("body-parser");
 const cookieSession = require("cookie-session");
 const bcrypt = require('bcryptjs')
 
+//Set up express with body-parser and cookie-session
 const app = express();
 app.set("view engine", "ejs");
 app.use(bodyParser.urlencoded({extended: true}));
@@ -51,6 +53,7 @@ function generateRandomString() {
   return result;
 }
 
+//Redirect from root page based on login status
 app.get("/", (req, res) => {
   if (req.session.user_id) {
     res.redirect("/urls");
@@ -102,7 +105,7 @@ app.post("/urls/:id/delete", (req, res) => {
 });
 
 //Update URL in database
-app.post("/urls/:id/update", (req, res) => {
+app.post("/urls/:id", (req, res) => {
   if (urlDatabase[req.params.id]['userID'] === req.session.user_id) {
     urlDatabase[req.params.id]['url'] = req.body['longURL'];
   }
@@ -138,7 +141,7 @@ app.post("/register", (req, res) => {
         emailUsed = true;
       }
     }
-
+    //Error if email already registered by a user
     if (emailUsed) {
       res.statusCode = 400;
       res.end("400 status code: Email already registered by a user");
@@ -205,7 +208,7 @@ app.post("/login", (req, res) => {
   }
 });
 
-//  Remove user_id cookie
+//Remove user_id cookie
 app.post("/logout", (req, res) => {
   req.session = null;
   res.redirect("/");
@@ -220,6 +223,7 @@ app.get("/u/:id", (req, res) => {
   }
 });
 
+//Display page to update URL
 app.get("/urls/:id", (req, res) => {
   let templateVars = {
     shortURL: req.params.id,
