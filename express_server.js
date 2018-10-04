@@ -226,7 +226,18 @@ app.get("/urls/:id", (req, res) => {
     urls: urlDatabase,
     user: users[req.session.user_id]
   };
-  res.render("urls_show", templateVars);
+  //Check that shortURL is in database
+  let validURL = false;
+  for (el in urlDatabase) {
+    if (req.params.id === el) {
+      validURL = true;
+    }
+  }
+  if (validURL) {
+    res.render("urls_show", templateVars);
+  } else {
+    res.end("URL does not exist!");
+  }
 });
 
 app.listen(PORT, () => {
