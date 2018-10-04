@@ -5,12 +5,20 @@
   </head>
 
 <body>
-  <p><%= shortURL %> - <a href = <%= urls[shortURL]['url'] %>><%= urls[shortURL]['url'] %></a></p>
-  <% const site = shortURL + "/update" %>
-  <form action=<%=site%> method="POST" style="margin:150px;">
+<% if (user) {%>
+  <% if (urls[shortURL]['userID'] === user['id']) { %>
+    <p><%= shortURL %> - <a href = <%= urls[shortURL]['url'] %>><%= urls[shortURL]['url'] %></a></p>
+    <% const site = shortURL + "/update" %>
+    <form action=<%=site%> method="POST" style="margin:150px;">
       <label for="longURL">Update URL:</label>
       <input id="longURL" type="text" name="longURL" placeholder="http://" style="width: 300px">
       <button type="submit" value="Submit">Submit</button>
     </form>
+    <%} else {%>
+      <p>Please login or register!</p>
+    <%}%>
+  <%} else {%>
+    <p>Please login or register!</p>
+  <%}%>
 </body>
 </html>
