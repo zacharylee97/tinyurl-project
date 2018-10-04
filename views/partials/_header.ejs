@@ -1,7 +1,7 @@
 <header>
   <h1><a href = "/urls">TinyApp</a></h1>
     <% if (user) { %>
-    <p>User ID: <%=user['id']%></p>
+    <p>User: <%=user['email']%></p>
     <form method="POST" action="/logout">
         <button type="logout" value="Logout">Logout</button>
       </form>

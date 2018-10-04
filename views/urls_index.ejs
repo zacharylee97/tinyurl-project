@@ -8,12 +8,11 @@
   <ul>
     <% if (user) {%>
       <!-- Filter urls for userID -->
+      <p><a href="urls/new">Create a New Short Link</a></p>
       <% for (const el in urls) { %>
         <% if (urls[el]['userID'] === user['id']) { %>
-          <% const site = "urls/" + el%>
-          <li><%= el %> - <a href = <%= urls[el]['url'] %>><%= urls[el]['url'] %></a> <a href=<%=site%>>Edit</a>
-            <% const del = site + "/delete"%>
-            <form method="POST" action=<%=del%>>
+          <li><%= el %> - <a href = <%= urls[el]['url'] %>><%= urls[el]['url'] %></a> <a href="urls/<%=el%>">Edit</a>
+            <form method="POST" action="urls/<%=el%>/delete">
               <button type="delete" value="Delete">Delete</button>
             </form>
           </li>
