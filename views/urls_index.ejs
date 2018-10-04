@@ -20,11 +20,7 @@
           <% } %>
         <% } %>
     <% } else { %>
-    <!-- Display all urls without edit/delete functions -->
-      <% for (const el in urls) { %>
-        <% const site = "urls/" + el%>
-        <li><%= el %> - <a href = <%= urls[el]['url'] %>><%= urls[el]['url'] %></a></li>
-      <% }; %>
+      <p>Please login or register!</p>
     <% }; %>
   </ul>
 </body>
