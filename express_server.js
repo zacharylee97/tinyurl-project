@@ -52,7 +52,11 @@ function generateRandomString() {
 }
 
 app.get("/", (req, res) => {
-  res.send("Hello!");
+  if (req.session.user_id) {
+    res.redirect("/urls");
+  } else {
+    res.redirect("/login");
+  }
 });
 
 //Connects to homepage with all database of URLs
@@ -110,7 +114,11 @@ app.get("/register", (req, res) => {
   let templateVars = {
     user: users[req.session.user_id]
   };
-  res.render("urls_register", templateVars);
+  if (req.session.user_id) {
+    res.redirect("/urls")
+  } else {
+    res.render("urls_register", templateVars);
+  }
 })
 
 //Save email and password to users database
@@ -153,7 +161,11 @@ app.get("/login", (req, res) => {
   let templateVars = {
     user: users[req.session.user_id]
   };
-  res.render("urls_login", templateVars);
+    if (req.session.user_id) {
+    res.redirect("/urls")
+  } else {
+    res.render("urls_login", templateVars);
+  }
 });
 
 // Log in form
@@ -196,12 +208,16 @@ app.post("/login", (req, res) => {
 //  Remove user_id cookie
 app.post("/logout", (req, res) => {
   req.session = null;
-  res.redirect("/urls");
+  res.redirect("/");
 });
 
 app.get("/u/:id", (req, res) => {
-  const longURL = urlDatabase[req.params.id]['url'];
-  res.redirect(longURL);
+  if (urlDatabase[req.params.id]) {
+    const longURL = urlDatabase[req.params.id]['url'];
+    res.redirect(longURL);
+  } else {
+    res.end("URL does not exist!");
+  }
 });
 
 app.get("/urls/:id", (req, res) => {
@@ -211,15 +227,7 @@ app.get("/urls/:id", (req, res) => {
     user: users[req.session.user_id]
   };
   res.render("urls_show", templateVars);
-})
-
-app.get("/urls.json", (req,res) => {
-  res.json(urlDatabase);
 });
-
-app.get("/hello", (req, res) => {
-  res.send("<html><body>Hello <b>World</b></body></html>\n");
-})
 
 app.listen(PORT, () => {
   console.log(`Example app listening on port ${PORT}!`);
