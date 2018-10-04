@@ -9,8 +9,14 @@ app.use(bodyParser.urlencoded({extended: true}));
 app.use(cookieParser());
 
 const urlDatabase = {
-  "b2xVn2": "http://www.lighthouselabs.ca",
-  "9sm5xK": "http://www.google.com"
+  "b2xVn2": {
+    url: "http://www.lighthouselabs.ca",
+    userID: "userRandomID"
+  },
+  "9sm5xK": {
+    url: "http://www.google.com",
+    userID: "jSi83D"
+  }
 }
 
 const users = {
@@ -71,7 +77,11 @@ app.post("/urls", (req, res) => {
   const input = req.body;
   const shortURL = generateRandomString();
   const longURL = input['longURL'];
-  urlDatabase[shortURL] = longURL;
+  const userID = req.cookies['user_id'];
+  urlDatabase[shortURL] = {
+    url: longURL,
+    userID: userID
+  }
   res.redirect("/urls/" + shortURL);
 });
 
