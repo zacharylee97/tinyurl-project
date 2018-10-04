@@ -135,29 +135,37 @@ app.get("/login", (req, res) => {
 
 // Log in form
 app.post("/login", (req, res) => {
-const email = req.body['email'];
+  const email = req.body['email'];
   const password = req.body['password'];
   //Check if email and password are submitted
   if (!email || !password){
     res.statusCode = 400;
     res.end("400 status code: Please provide email and password");
   } else {
-    //Check if email and password match a user
+    //Check if email matches a user
     var matchUser = false;
+    var login = false;
     var id;
     for (user in users) {
-      if (email === users[user]['email'] && password === users[user]['password']) {
+      if (email === users[user]['email']) {
         matchUser = true;
         id = user;
       }
     }
-    //Log in if user is registered
     if (matchUser) {
-      res.cookie("user_id", id);
-      res.redirect("/urls");
+      //Check if password matches registered user
+      if (password === users[id]['password']) {
+        res.cookie("user_id", id);
+        res.redirect("/");
+      //403 status code if password does not match user
+      } else {
+        res.statusCode = 403;
+        res.end("403 status code: Email and password are incorect");
+      }
+    //403 status code if email does not match user
     } else {
-      res.statusCode = 400;
-      res.end("400 status code: Email not registered by a user");
+      res.statusCode = 403;
+      res.end("403 status code: Email and password are not incorrect");
     }
   }
 });
