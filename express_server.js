@@ -87,13 +87,17 @@ app.post("/urls", (req, res) => {
 
 //Delete URL from database
 app.post("/urls/:id/delete", (req, res) => {
-  delete urlDatabase[req.params.id];
-  res.redirect("/urls");
+  if (urlDatabase[req.params.id]['userID'] === req.cookies['user_id']) {
+    delete urlDatabase[req.params.id];
+  }
+    res.redirect("/urls");
 });
 
 //Update URL in database
 app.post("/urls/:id/update", (req, res) => {
-  urlDatabase[req.params.id] = req.body['longURL'];
+  if (urlDatabase[req.params.id]['userID'] === req.cookies['user_id']) {
+    urlDatabase[req.params.id]['url'] = req.body['longURL'];
+  }
   res.redirect("/urls");
 });
 
