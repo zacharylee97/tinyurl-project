@@ -23,6 +23,11 @@ const users = {
     id: "user2RandomID",
     email: "user2@example.com",
     password: "dishwasher-funk"
+  },
+  "jSi83D": {
+    id: "jSi83D",
+    email: "zacharylhlee@hotmail.com",
+    password: "hello"
   }
 }
 
@@ -78,18 +83,6 @@ app.post("/urls/:id/update", (req, res) => {
   res.redirect("/urls");
 });
 
-//Save username as a cookie
-app.post("/login", (req, res) => {
-  username = req.body['username'];
-  res.cookie("username", username);
-  res.redirect("/urls");
-});
-
-//Remove username cookie
-app.post("/logout", (req, res) => {
-  res.clearCookie("username")
-  res.redirect("/urls");
-});
 
 //Connects to registration page
 app.get("/register", (req, res) => {
@@ -108,7 +101,7 @@ app.post("/register", (req, res) => {
     res.statusCode = 400;
     res.end("400 status code: Please provide email and password");
   } else {
-    //Check is email is already registered as a user
+    //Check if email is already registered as a user
     var emailUsed = false;
     for (user in users) {
       if (email === users[user]['email']) {
@@ -130,6 +123,49 @@ app.post("/register", (req, res) => {
       res.redirect("/urls");
     }
   }
+});
+
+//Connects to login page
+app.get("/login", (req, res) => {
+  let templateVars = {
+    user: users[req.cookies['user_id']]
+  };
+  res.render("urls_login", templateVars);
+});
+
+// Log in form
+app.post("/login", (req, res) => {
+const email = req.body['email'];
+  const password = req.body['password'];
+  //Check if email and password are submitted
+  if (!email || !password){
+    res.statusCode = 400;
+    res.end("400 status code: Please provide email and password");
+  } else {
+    //Check if email and password match a user
+    var matchUser = false;
+    var id;
+    for (user in users) {
+      if (email === users[user]['email'] && password === users[user]['password']) {
+        matchUser = true;
+        id = user;
+      }
+    }
+    //Log in if user is registered
+    if (matchUser) {
+      res.cookie("user_id", id);
+      res.redirect("/urls");
+    } else {
+      res.statusCode = 400;
+      res.end("400 status code: Email not registered by a user");
+    }
+  }
+});
+
+//  Remove user_id cookie
+app.post("/logout", (req, res) => {
+  res.clearCookie("user_id")
+  res.redirect("/urls");
 });
 
 app.get("/u/:id", (req, res) => {
