@@ -19,11 +19,13 @@ app.use(methodOverride('_method'));
 const urlDatabase = {
   "b2xVn2": {
     url: "http://www.lighthouselabs.ca",
-    userID: "userRandomID"
+    userID: "userRandomID",
+    visits: 0
   },
   "9sm5xK": {
     url: "http://www.google.com",
-    userID: "user2RandomID"
+    userID: "user2RandomID",
+    visits: 0
   }
 }
 
@@ -88,7 +90,8 @@ app.post("/urls", (req, res) => {
   const userID = req.session.user_id;
   urlDatabase[shortURL] = {
     url: longURL,
-    userID: userID
+    userID: userID,
+    visits: 0
   }
   res.redirect("/urls/" + shortURL);
 });
@@ -211,10 +214,12 @@ app.post("/logout", (req, res) => {
   res.redirect("/");
 });
 
+//Redirect to longURL
 app.get("/u/:id", (req, res) => {
   if (urlDatabase[req.params.id]) {
     const longURL = urlDatabase[req.params.id]["url"];
     res.redirect(longURL);
+    urlDatabase[req.params.id]['visits']++;
   } else {
     res.end("URL does not exist!");
   }
