@@ -12,7 +12,7 @@ app.set("view engine", "ejs");
 app.use(bodyParser.urlencoded({extended: true}));
 app.use(cookieSession({
   name: "session",
-  keys: ["user_id"]
+  keys: ["user_id", "visitor_id"]
 }));
 app.use(methodOverride('_method'));
 
@@ -20,12 +20,14 @@ const urlDatabase = {
   "b2xVn2": {
     url: "http://www.lighthouselabs.ca",
     userID: "userRandomID",
-    visits: 0
+    totalVisits: 0,
+    visitors: {}
   },
   "9sm5xK": {
     url: "http://www.google.com",
     userID: "user2RandomID",
-    visits: 0
+    totalVisits: 0,
+    visitors: {}
   }
 }
 
@@ -91,7 +93,8 @@ app.post("/urls", (req, res) => {
   urlDatabase[shortURL] = {
     url: longURL,
     userID: userID,
-    visits: 0
+    totalVisits: 0,
+    viitors: {}
   }
   res.redirect("/urls/" + shortURL);
 });
@@ -218,8 +221,20 @@ app.post("/logout", (req, res) => {
 app.get("/u/:id", (req, res) => {
   if (urlDatabase[req.params.id]) {
     const longURL = urlDatabase[req.params.id]["url"];
+    urlDatabase[req.params.id]['totalVisits']++;
+
+  //Keep track of unique visitors
+    let visitor_id = req.session.user_id;
+    //If user is not logged in, generate unique visitor_id
+    if (visitor_id === undefined) {
+      visitor_id = generateRandomString();
+    }
+    console.log(visitor_id);
+    req.session.visitor_id = visitor_id;
+    if (!urlDatabase[req.params.id]['visitors'].hasOwnProperty(visitor_id)) {
+      urlDatabase[req.params.id]['visitors'][visitor_id] = 1;
+    }
     res.redirect(longURL);
-    urlDatabase[req.params.id]['visits']++;
   } else {
     res.end("URL does not exist!");
   }
