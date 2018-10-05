@@ -21,13 +21,15 @@ const urlDatabase = {
     url: "http://www.lighthouselabs.ca",
     userID: "userRandomID",
     totalVisits: 0,
-    visitors: {}
+    visitors: {},
+    log: {}
   },
   "9sm5xK": {
     url: "http://www.google.com",
     userID: "user2RandomID",
     totalVisits: 0,
-    visitors: {}
+    visitors: {},
+    log: {}
   }
 }
 
@@ -94,7 +96,8 @@ app.post("/urls", (req, res) => {
     url: longURL,
     userID: userID,
     totalVisits: 0,
-    viitors: {}
+    visitors: {},
+    log: {}
   }
   res.redirect("/urls/" + shortURL);
 });
@@ -229,7 +232,8 @@ app.get("/u/:id", (req, res) => {
     if (visitor_id === undefined) {
       visitor_id = generateRandomString();
     }
-    console.log(visitor_id);
+    let date = new Date();
+    urlDatabase[req.params.id]['log'][date] = visitor_id;
     req.session.visitor_id = visitor_id;
     if (!urlDatabase[req.params.id]['visitors'].hasOwnProperty(visitor_id)) {
       urlDatabase[req.params.id]['visitors'][visitor_id] = 1;
