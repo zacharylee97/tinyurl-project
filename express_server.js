@@ -4,7 +4,7 @@ const express = require("express");
 const bodyParser = require("body-parser");
 const cookieSession = require("cookie-session");
 const bcrypt = require("bcryptjs")
-const methodOverride = require('method-override');
+const methodOverride = require("method-override");
 
 //Set up express with body-parser and cookie-session
 const app = express();
@@ -14,6 +14,7 @@ app.use(cookieSession({
   name: "session",
   keys: ["user_id"]
 }));
+app.use(methodOverride('_method'));
 
 const urlDatabase = {
   "b2xVn2": {
@@ -93,7 +94,7 @@ app.post("/urls", (req, res) => {
 });
 
 //Delete URL from database
-app.post("/urls/:id/delete", (req, res) => {
+app.delete("/urls/:id/delete", (req, res) => {
   if (urlDatabase[req.params.id]['userID'] === req.session.user_id) {
     delete urlDatabase[req.params.id];
   }
@@ -101,7 +102,7 @@ app.post("/urls/:id/delete", (req, res) => {
 });
 
 //Update URL in database
-app.post("/urls/:id", (req, res) => {
+app.put("/urls/:id", (req, res) => {
   if (urlDatabase[req.params.id]["userID"] === req.session.user_id) {
     urlDatabase[req.params.id]["url"] = req.body["longURL"];
   }
