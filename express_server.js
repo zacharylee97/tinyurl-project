@@ -57,7 +57,7 @@ function generateRandomString() {
 }
 
 //Function to check if email has already been registered
-function registered(users, email) {
+function isRegistered(users, email) {
   let isUsed = false;
   for (let user in users) {
     if (email === users[user]["email"]) {
@@ -65,6 +65,25 @@ function registered(users, email) {
     }
   }
   return isUsed;
+}
+
+function checkLogin(users, email, password) {
+  let matchUser = isRegistered(users, email);
+  if (matchUser) {
+    let id;
+    for (user in users) {
+      if (email === users[user]["email"]) {
+        id = user;
+      }
+    }
+    if (bcrypt.compareSync(password, users[id]["password"])) {
+      return true;
+    } else {
+      return false;
+    }
+  } else {
+    return false;
+  }
 }
 
 //Redirect from root page based on login status
@@ -151,8 +170,7 @@ app.post("/register", (req, res) => {
     res.statusCode = 400;
     res.end("400 status code: Please provide email and password");
   } else {
-    var emailUsed = registered(users, email);
-    console.log(emailUsed)
+    const emailUsed = isRegistered(users, email);
     //Error if email already registered by a user
     if (emailUsed) {
       res.statusCode = 400;
@@ -188,33 +206,24 @@ app.post("/login", (req, res) => {
   const email = req.body["email"];
   const password = req.body["password"];
   //Check if email and password are submitted
-  if (!email || !password){
+  if (!email || !password) {
     res.statusCode = 400;
     res.end("400 status code: Please provide email and password");
   } else {
-    //Check if email matches a user
-    let matchUser = false;
-    let id;
-    for (user in users) {
-      if (email === users[user]["email"]) {
-        matchUser = true;
-        id = user;
+    //Check if email and password match a user
+    let login = checkLogin(users, email, password);
+    if (login) {
+      let id;
+      for (user in users) {
+        if (email === users[user]["email"]) {
+          id = user;
+        }
       }
-    }
-    if (matchUser) {
-      //Check if password matches registered user
-      if (bcrypt.compareSync(password, users[id]["password"])) {
-        req.session.user_id = id;
-        res.redirect("/");
-      //403 status code if password does not match user
-      } else {
-        res.statusCode = 403;
-        res.end("403 status code: Email and password are incorect");
-      }
-    //403 status code if email does not match user
+      req.session.user_id = id;
+      res.redirect("/");
     } else {
       res.statusCode = 403;
-      res.end("403 status code: Email and password are not incorrect");
+      res.end("403 status code: Email and password are incorect");
     }
   }
 });
