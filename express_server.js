@@ -85,12 +85,11 @@ function checkLogin(users, email, password) {
   }
 }
 
-function checkDatabase(urls, id, req, session) {
+function checkDatabase(urls, id, req) {
   if (urls[id]) {
-    const longURL = urlDatabase[req.params.id]["url"];
     urlDatabase[req.params.id]['totalVisits']++;
     //Keep track of unique visitors
-    let visitor_id = session;
+    let visitor_id = req.session.user_id;
     //If user is not logged in, generate unique visitor_id
     if (visitor_id === undefined) {
       visitor_id = generateRandomString();
@@ -98,8 +97,8 @@ function checkDatabase(urls, id, req, session) {
     let date = new Date();
     urls[id]['log'][date] = visitor_id;
     req.session.visitor_id = visitor_id;
-    if (!urlDatabase[req.params.id]['visitors'].hasOwnProperty(visitor_id)) {
-      urlDatabase[req.params.id]['visitors'][visitor_id] = 1;
+    if (!urls[id]['visitors'].hasOwnProperty(visitor_id)) {
+      urls[id]['visitors'][visitor_id] = 1;
     }
     return true;
   } else {
@@ -259,7 +258,7 @@ app.post("/logout", (req, res) => {
 app.get("/u/:id", (req, res) => {
   const id = req.params.id;
   const longURL = urlDatabase[req.params.id]["url"];
-  const check = checkDatabase(urlDatabase, id, req, req.session.user_id);
+  const check = checkDatabase(urlDatabase, id, req);
   if (check) {
     res.redirect(longURL);
   } else {
