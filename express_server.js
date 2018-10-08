@@ -56,7 +56,6 @@ function generateRandomString() {
   return result;
 }
 
-//Function to check if email has already been registered
 function isRegistered(users, email) {
   let isUsed = false;
   for (let user in users) {
@@ -81,6 +80,28 @@ function checkLogin(users, email, password) {
     } else {
       return false;
     }
+  } else {
+    return false;
+  }
+}
+
+function checkDatabase(urls, id, req, session) {
+  if (urls[id]) {
+    const longURL = urlDatabase[req.params.id]["url"];
+    urlDatabase[req.params.id]['totalVisits']++;
+    //Keep track of unique visitors
+    let visitor_id = session;
+    //If user is not logged in, generate unique visitor_id
+    if (visitor_id === undefined) {
+      visitor_id = generateRandomString();
+    }
+    let date = new Date();
+    urls[id]['log'][date] = visitor_id;
+    req.session.visitor_id = visitor_id;
+    if (!urlDatabase[req.params.id]['visitors'].hasOwnProperty(visitor_id)) {
+      urlDatabase[req.params.id]['visitors'][visitor_id] = 1;
+    }
+    return true;
   } else {
     return false;
   }
@@ -236,25 +257,13 @@ app.post("/logout", (req, res) => {
 
 //Redirect to longURL
 app.get("/u/:id", (req, res) => {
-  if (urlDatabase[req.params.id]) {
-    const longURL = urlDatabase[req.params.id]["url"];
-    urlDatabase[req.params.id]['totalVisits']++;
-
-  //Keep track of unique visitors
-    let visitor_id = req.session.user_id;
-    //If user is not logged in, generate unique visitor_id
-    if (visitor_id === undefined) {
-      visitor_id = generateRandomString();
-    }
-    let date = new Date();
-    urlDatabase[req.params.id]['log'][date] = visitor_id;
-    req.session.visitor_id = visitor_id;
-    if (!urlDatabase[req.params.id]['visitors'].hasOwnProperty(visitor_id)) {
-      urlDatabase[req.params.id]['visitors'][visitor_id] = 1;
-    }
+  const id = req.params.id;
+  const longURL = urlDatabase[req.params.id]["url"];
+  const check = checkDatabase(urlDatabase, id, req, req.session.user_id);
+  if (check) {
     res.redirect(longURL);
   } else {
-    res.end("URL does not exist!");
+    res.end("URL does not exist!")
   }
 });
 
