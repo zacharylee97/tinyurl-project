@@ -67,7 +67,7 @@ app.get("/", (req, res) => {
 
 //Connects to homepage with all database of URLs
 app.get("/urls", (req, res) => {
-  let templateVars = {
+  const templateVars = {
     urls: urlDatabase,
     user: users[req.session.user_id]
      };
@@ -76,7 +76,7 @@ app.get("/urls", (req, res) => {
 
 //Connects to page to add URLs
 app.get("/urls/new", (req, res) => {
-  let templateVars = {
+  const templateVars = {
     user: users[req.session.user_id]
      };
   if (req.session.user_id) {
@@ -120,7 +120,7 @@ app.put("/urls/:id", (req, res) => {
 
 //Connects to registration page
 app.get("/register", (req, res) => {
-  let templateVars = {
+  const templateVars = {
     user: users[req.session.user_id]
   };
   if (req.session.user_id) {
@@ -167,7 +167,7 @@ app.post("/register", (req, res) => {
 
 //Connects to login page
 app.get("/login", (req, res) => {
-  let templateVars = {
+  const templateVars = {
     user: users[req.session.user_id]
   };
     if (req.session.user_id) {
@@ -188,7 +188,6 @@ app.post("/login", (req, res) => {
   } else {
     //Check if email matches a user
     let matchUser = false;
-    let login = false;
     let id;
     for (user in users) {
       if (email === users[user]["email"]) {
@@ -246,7 +245,7 @@ app.get("/u/:id", (req, res) => {
 
 //Display page to update URL
 app.get("/urls/:id", (req, res) => {
-  let templateVars = {
+  const templateVars = {
     shortURL: req.params.id,
     urls: urlDatabase,
     user: users[req.session.user_id]
