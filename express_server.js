@@ -56,6 +56,17 @@ function generateRandomString() {
   return result;
 }
 
+//Function to check if email has already been registered
+function registered(users, email) {
+  let isUsed = false;
+  for (let user in users) {
+    if (email === users[user]["email"]) {
+      isUsed = true;
+    }
+  }
+  return isUsed;
+}
+
 //Redirect from root page based on login status
 app.get("/", (req, res) => {
   if (req.session.user_id) {
@@ -128,7 +139,7 @@ app.get("/register", (req, res) => {
   } else {
     res.render("urls_register", templateVars);
   }
-})
+});
 
 //Save email and password to users database
 app.post("/register", (req, res) => {
@@ -140,13 +151,8 @@ app.post("/register", (req, res) => {
     res.statusCode = 400;
     res.end("400 status code: Please provide email and password");
   } else {
-    //Check if email is already registered as a user
-    let emailUsed = false;
-    for (let user in users) {
-      if (email === users[user]["email"]) {
-        emailUsed = true;
-      }
-    }
+    var emailUsed = registered(users, email);
+    console.log(emailUsed)
     //Error if email already registered by a user
     if (emailUsed) {
       res.statusCode = 400;
